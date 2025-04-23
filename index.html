@@ -1,158 +1,226 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phông Nền 3D Đức Decor</title>
+    <title>DT Decor - Phông Nền 3D</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #fff;
+            color: #000;
         }
         header {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            padding: 20px;
+            background-color: #ff6200;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        header h1 {
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .logo h1 {
+            color: #fff;
+            font-size: 1.5em;
             margin: 0;
-            font-size: 2.5em;
         }
-        header p {
-            margin: 5px 0;
-            font-size: 1.1em;
+        .search-bar input {
+            padding: 5px;
+            border: 1px solid #fff;
+            border-radius: 5px;
         }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 20px;
+        .cart {
+            color: #fff;
+            font-size: 1.2em;
         }
-        .intro, .pricing, .contact {
-            background-color: white;
+        nav {
+            background-color: #ff6200;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #000;
+        }
+        .banner {
+            background-color: #fff;
+            color: #ff6200;
             padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            border-bottom: 2px solid #ff6200;
         }
-        .intro h2, .pricing h2, .contact h2 {
-            color: #4CAF50;
+        .banner h2 {
+            font-size: 2em;
+            margin: 0;
         }
-        .pricing table {
-            width: 100%;
-            border-collapse: collapse;
+        .banner p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #000;
+        }
+        .banner .hotline {
+            font-size: 1em;
+            color: #000;
+        }
+        .banner img {
+            max-width: 100%;
+            height: auto;
             margin-top: 10px;
         }
-        .pricing th, .pricing td {
-            border: 1px solid #ddd;
-            padding: 10px;
+        .services {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .service-item {
+            text-align: center;
+            color: #ff6200;
+        }
+        .service-item img {
+            height: 50px;
+        }
+        .service-item p {
+            color: #000;
+        }
+        .products {
+            padding: 20px;
+            background-color: #fff;
+        }
+        .products h2 {
+            color: #ff6200;
             text-align: center;
         }
-        .pricing th {
-            background-color: #4CAF50;
-            color: white;
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
         }
-        .contact a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        .contact a:hover {
-            text-decoration: underline;
-        }
-        footer {
-            text-align: center;
+        .product-item {
+            background-color: #fff;
+            margin: 10px;
             padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            border-radius: 5px;
+            text-align: center;
+            width: 200px;
+            border: 1px solid #ff6200;
+        }
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+        }
+        .product-item p {
+            margin: 5px 0;
+            color: #000;
+        }
+        .product-item button {
+            background-color: #ff6200;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .product-item button:hover {
+            background-color: #e55b00;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Đức Decor - Phông Nền 3D</h1>
-        <p>Chuyên cung cấp phông nền chụp ảnh, livestream chất lượng cao</p>
-        <p>Liên hệ: 0909 xxx xxx | Zalo: 0909 xxx xxx</p>
+        <div class="logo">
+            <!-- Logo DT Decor -->
+            <img src="https://raw.githubusercontent.com/duckila222/TDecor-website/main/logo.png" alt="DT Decor">
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Tìm kiếm...">
+        </div>
+        <div class="cart">
+            Giỏ hàng / 0đ
+        </div>
     </header>
 
-    <div class="container">
-        <div class="intro">
-            <h2>Giới thiệu</h2>
-            <p>Đức Decor tự hào cung cấp phông nền 3D sắc nét, bền màu, phù hợp cho chụp ảnh, livestream, sự kiện. Sản phẩm được in theo yêu cầu, giá cả cạnh tranh, dịch vụ tận tâm.</p>
-        </div>
+    <nav>
+        <a href="#">Trang chủ</a>
+        <a href="#">Sản phẩm</a>
+        <a href="#">Chất liệu</a>
+        <a href="#">Ảnh từ khách hàng</a>
+        <a href="#">Video sản phẩm</a>
+        <a href="#">Giới thiệu</a>
+        <a href="#">Liên hệ</a>
+    </nav>
 
-        <div class="pricing">
-            <h2>Bảng giá</h2>
-            <table>
-                <tr>
-                    <th>Sản phẩm</th>
-                    <th>Chất liệu</th>
-                    <th>Đơn giá</th>
-                </tr>
-                <tr>
-                    <td>Phông nền</td>
-                    <td>3D</td>
-                    <td>95,000 VNĐ/m²</td>
-                </tr>
-            </table>
-            <p><strong>Dịch vụ:</strong> Miễn phí ship từ 2 bức, hỗ trợ ship COD toàn quốc, in theo yêu cầu (phụ phí 20,000 VNĐ/đơn).</p>
-            <p><strong>Bảo hành:</strong> Đổi trả trong 1 tháng nếu lỗi in.</p>
+    <div class="banner">
+        <h2>Bạn Trường Đẹp Trai Vãi Lồn</h2>
+        <p>Đơn hàng từ 2 bức miễn phí vận chuyển<br>Miễn phí in chuyển toàn quốc</p>
+        <div class="hotline">
+            CSKH: 0963023665
         </div>
+        <!-- Hình ảnh banner, mày có thể chèn ảnh sau -->
+        <img src="placeholder.jpg" alt="Banner placeholder" style="display: none;">
+    </div>
 
-        <div class="contact">
-            <h2>Liên hệ ngay</h2>
-            <p>Hotline: 0909 xxx xxx</p>
-            <p>Zalo: 0909 xxx xxx</p>
-            <p>Facebook: <a href="https://www.facebook.com/ducdecor" target="_blank">Đức Decor</a></p>
+    <div class="services">
+        <div class="service-item">
+            <img src="https://via.placeholder.com/50?text=Quality" alt="Sản phẩm chất lượng">
+            <p>Sản phẩm chất lượng</p>
+        </div>
+        <div class="service-item">
+            <img src="https://via.placeholder.com/50?text=Shipping" alt="Giao hàng toàn quốc">
+            <p>Giao hàng toàn quốc</p>
+        </div>
+        <div class="service-item">
+            <img src="https://via.placeholder.com/50?text=Support" alt="Hỗ trợ 24/7">
+            <p>Hỗ trợ 24/7</p>
+        </div>
+        <div class="service-item">
+            <img src="https://via.placeholder.com/50?text=Freeship" alt="Freeship từ 2 bức">
+            <p>Freeship từ 2 bức</p>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Đức Decor. All rights reserved.</p>
-    </footer>
+    <div class="products">
+        <h2>MẪU MỚI CẬP NHẬT</h2>
+        <div class="product-list">
+            <div class="product-item">
+                <img src="https://via.placeholder.com/200?text=DT001" alt="Phông nền DT001">
+                <p>DT001</p>
+                <p>95,000đ/m²</p>
+                <button>MUA NGAY</button>
+            </div>
+            <div class="product-item">
+                <img src="https://via.placeholder.com/200?text=DT002" alt="Phông nền DT002">
+                <p>DT002</p>
+                <p>95,000đ/m²</p>
+                <button>MUA NGAY</button>
+            </div>
+            <div class="product-item">
+                <img src="https://via.placeholder.com/200?text=DT003" alt="Phông nền DT003">
+                <p>DT003</p>
+                <p>95,000đ/m²</p>
+                <button>MUA NGAY</button>
+            </div>
+            <div class="product-item">
+                <img src="https://via.placeholder.com/200?text=DT004" alt="Phông nền DT004">
+                <p>DT004</p>
+                <p>95,000đ/m²</p>
+                <button>MUA NGAY</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
